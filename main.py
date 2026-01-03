@@ -1,4 +1,5 @@
 from google import genai
+from google.genai import types
 import time
 import sys
 
@@ -6,10 +7,15 @@ import sys
 class GeminiAPI:
     def __init__(self, api_key: str) -> None:
         self.client = genai.Client(api_key=api_key)
+        self.instructions = "Your response must be factual and correct, regardless if it takes a long time to generate a response, this ensures accuracy than baseless assumptions or opinions. Unless the user prompts you for opinionated responses. Nonetheless, the former instruction takes precedence."
 
     def ask_question(self, question: str) -> None:
         response = self.client.models.generate_content(
-            model="gemini-2.5-flash", contents=question
+            model="gemini-2.5-flash",
+            contents=question,
+            config=types.GenerateContentConfig(
+                system_instruction=self.instructions, temperature=0.2
+            ),
         )
         response = str(response.text)
         self._animate_text(response)
