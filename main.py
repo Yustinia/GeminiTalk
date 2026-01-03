@@ -1,5 +1,6 @@
 from google import genai
 from google.genai import types
+from pathlib import Path
 import time
 import sys
 
@@ -7,7 +8,15 @@ import sys
 class GeminiAPI:
     def __init__(self, api_key: str) -> None:
         self.client = genai.Client(api_key=api_key)
-        self.instructions = "Your response must be factual and correct, regardless if it takes a long time to generate a response, this ensures accuracy than baseless assumptions or opinions. Unless the user prompts you for opinionated responses. Nonetheless, the former instruction takes precedence."
+        self.instructions = [
+            "Response must be factual and correct, regardless if response takes longer to generate.",
+            "Ensure accuracy than baseless assumptions or opinions; unless, the user prompts for opinionated answers.",
+            "Provide the entire hyperlink in the response when sourcing answers from other websites.",
+            "Adopt a friendly and casual tone. Adjust based on user request.",
+            "Clarification will not be provided, ensure on the first response that it tackles most possible questions or clarifications.",
+            "In regards to code handling. Write clear, non-complex code with comments on confusing parts and provide concise explanations.",
+            "The refusal structure must reference the exact ToS line and briefly explain why.",
+        ]
 
     def ask_question(self, question: str) -> None:
         response = self.client.models.generate_content(
@@ -31,7 +40,23 @@ def load_api_key(filepath: str = "api_key.txt"):
         return file.read().strip()
 
 
+def validate_api_key_file(path: Path) -> None:
+    if not path.exists():
+        path.touch()
+        raise FileNotFoundError("api_key.txt was created. Add your API key and rerun.")
+
+    if not path.read_text().strip():
+        raise ValueError("api_key.txt exists but is empty")
+
+
 def main():
+    file = Path("api_key.txt")
+    try:
+        validate_api_key_file(file)
+    except (FileNotFoundError, ValueError) as e:
+        print(e)
+        return
+
     API_KEY = load_api_key()
     gemini = GeminiAPI(API_KEY)
 
