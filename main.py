@@ -52,8 +52,8 @@ def show_opts() -> None:
     options = [
         "[0] Exit",
         "[1] Ask Question",
-        "[2] Text to Image",
-        "[3] Image to Text",
+        "[2] Text to Image (soon)",
+        "[3] Image to Text (soon)",
         "[4] Add Additional Instructions",
     ]
 
@@ -94,6 +94,7 @@ def main() -> None:
 
         except ValueError as e:
             print(e)
+            continue
 
         match option:
             case 0:
