@@ -54,6 +54,7 @@ def show_opts() -> None:
         "[1] Ask Question",
         "[2] Text to Image",
         "[3] Image to Text",
+        "[4] Add Additional Instructions",
     ]
 
     print()
@@ -63,9 +64,13 @@ def show_opts() -> None:
 
 
 def validate_option_chosen(option: int) -> int:
-    if 0 <= option < 4:
+    if 0 <= option < 5:
         return option
     raise ValueError(f"'{option}' is not a valid option")
+
+
+def add_instruction(instruct: str, gemini: GeminiAPI) -> None:
+    gemini.instructions.append(instruct)
 
 
 def main() -> None:
@@ -104,6 +109,14 @@ def main() -> None:
 
             case 3:
                 pass
+
+            case 4:
+                instruction = input(
+                    "Enter additional instructions. 'Q' to quit: "
+                ).strip()
+
+                if instruction != "q" or instruction != "Q":
+                    add_instruction(instruction, gemini)
 
 
 if __name__ == "__main__":
