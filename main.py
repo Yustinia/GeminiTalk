@@ -2,7 +2,6 @@ from google import genai
 from google.genai import types
 from pathlib import Path
 import time
-import sys
 
 
 class GeminiAPI:
@@ -49,10 +48,30 @@ def validate_api_key_file(path: Path) -> None:
         raise ValueError("api_key.txt exists but is empty")
 
 
-def main():
-    file = Path("api_key.txt")
+def show_opts() -> None:
+    options = [
+        "[0] Exit",
+        "[1] Ask Question",
+        "[2] Text to Image",
+        "[3] Image to Text",
+    ]
+
+    print()
+    for line in options:
+        print(line)
+    print()
+
+
+def validate_option_chosen(option: int) -> int:
+    if 0 <= option < 4:
+        return option
+    raise ValueError(f"'{option}' is not a valid option")
+
+
+def main() -> None:
+    api_file = Path("api_key.txt")
     try:
-        validate_api_key_file(file)
+        validate_api_key_file(api_file)
     except (FileNotFoundError, ValueError) as e:
         print(e)
         return
@@ -60,9 +79,31 @@ def main():
     API_KEY = load_api_key()
     gemini = GeminiAPI(API_KEY)
 
-    if not sys.stdin.isatty():
-        piped_input = sys.stdin.read().strip()
-        gemini.ask_question(piped_input)
+    while True:
+        option = 0
+        show_opts()
+
+        try:
+            option = int(input("Enter option: "))
+            validate_option_chosen(option)
+
+        except ValueError as e:
+            print(e)
+
+        match option:
+            case 0:
+                print("Goodbye!")
+                break
+
+            case 1:
+                question = input("Enter your question: ").strip()
+                gemini.ask_question(question)
+
+            case 2:
+                pass
+
+            case 3:
+                pass
 
 
 if __name__ == "__main__":
