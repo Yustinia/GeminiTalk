@@ -1,6 +1,7 @@
 from google import genai
 from google.genai import types
 from pathlib import Path
+from PIL import Image
 import time
 
 
@@ -52,9 +53,7 @@ def show_opts() -> None:
     options = [
         "[0] Exit",
         "[1] Ask Question",
-        "[2] Text to Image (soon)",
-        "[3] Image to Text (soon)",
-        "[4] Add Additional Instructions",
+        "[2] Add Additional Instructions",
     ]
 
     print()
@@ -106,12 +105,6 @@ def main() -> None:
                 gemini.ask_question(question)
 
             case 2:
-                pass
-
-            case 3:
-                pass
-
-            case 4:
                 instruction = input(
                     "Enter additional instructions. 'Q' to quit: "
                 ).strip()
